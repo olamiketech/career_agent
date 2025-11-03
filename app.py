@@ -151,8 +151,24 @@ def create_ui():
     
     # Custom CSS for additional styling
     custom_css = """
+    :root {
+        color-scheme: light;
+    }
+    body {
+        margin: 0;
+        padding: 0;
+        background: transparent !important;
+    }
     .gradio-container {
         font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+        max-width: 100% !important;
+        padding: 1.5rem !important;
+        box-sizing: border-box;
+    }
+    .gradio-container .gradio-block {
+        width: 100%;
+        max-width: 960px;
+        margin: 0 auto;
     }
     .chat-message {
         padding: 1rem;
@@ -163,6 +179,7 @@ def create_ui():
         border-radius: 1rem !important;
         border: 1px solid #e2e8f0 !important;
         background-color: #f8fafc !important;
+        max-height: 75vh;
     }
     .gradio-button {
         border-radius: 0.5rem !important;
@@ -182,6 +199,9 @@ def create_ui():
         transform: translateY(-1px);
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
     }
+    .action-button {
+        min-width: 0 !important;
+    }
     .gradio-textbox textarea {
         border-radius: 0.5rem !important;
         border: 2px solid #cbd5e1 !important;
@@ -189,6 +209,61 @@ def create_ui():
     .gradio-textbox textarea:focus {
         border-color: #3b82f6 !important;
         box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+    }
+    #input-row {
+        gap: 0.75rem;
+        align-items: stretch;
+        flex-wrap: nowrap;
+    }
+    #input-row .gradio-textbox {
+        flex: 1 1 auto;
+    }
+    #button-column {
+        display: flex;
+        gap: 0.5rem;
+    }
+    #button-column .gradio-button {
+        flex: 1 1 0;
+    }
+    .header-text,
+    .suggestions {
+        text-align: center;
+    }
+    @media (max-width: 1024px) {
+        .gradio-container {
+            padding: 1.25rem !important;
+        }
+    }
+    @media (max-width: 768px) {
+        .gradio-container {
+            padding: 1rem !important;
+        }
+        #input-row {
+            flex-direction: column;
+        }
+        #button-column {
+            width: 100%;
+        }
+        #button-column .gradio-button {
+            width: 100%;
+        }
+        .gradio-chatbot {
+            height: clamp(320px, 65vh, 540px) !important;
+        }
+    }
+    @media (max-width: 480px) {
+        .gradio-container {
+            padding: 0.75rem !important;
+        }
+        .header-text h1 {
+            font-size: 1.75rem;
+        }
+        .header-text h3 {
+            font-size: 1.1rem;
+        }
+        .gradio-button {
+            width: 100%;
+        }
     }
     """
     
@@ -221,7 +296,7 @@ def create_ui():
             value=[{"role": "assistant", "content": f"Hello! I'm {me.name}'s AI assistant. 👋\n\nI'm here to help you learn about {me.name}'s background, experience, and work. Feel free to ask me anything - I'd love to chat!"}],
         )
         
-        with gr.Row():
+        with gr.Row(elem_id="input-row", equal_height=True):
             msg = gr.Textbox(
                 label="",
                 placeholder="Type your message here... (e.g., 'Tell me about your experience' or 'What projects have you worked on?')",
@@ -230,20 +305,21 @@ def create_ui():
                 container=False,
                 autofocus=True,
             )
-            submit_btn = gr.Button(
-                "Send", 
-                variant="primary", 
-                scale=1,
-                size="lg",
-                min_width=100,
-            )
-            clear_btn = gr.Button(
-                "Clear", 
-                variant="secondary", 
-                scale=1,
-                size="lg",
-                min_width=100,
-            )
+            with gr.Column(scale=3, min_width=220, elem_id="button-column"):
+                submit_btn = gr.Button(
+                    "Send",
+                    variant="primary",
+                    size="lg",
+                    min_width=100,
+                    elem_classes=["action-button"],
+                )
+                clear_btn = gr.Button(
+                    "Clear",
+                    variant="secondary",
+                    size="lg",
+                    min_width=100,
+                    elem_classes=["action-button"],
+                )
         
         # Footer with helpful suggestions
         gr.Markdown(
