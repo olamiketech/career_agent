@@ -161,25 +161,24 @@ def create_ui():
     }
     .gradio-container {
         font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
-        max-width: 100% !important;
-        padding: 1.5rem !important;
+        width: 100%;
+        max-width: 720px;
+        margin: 0 auto;
+        padding: clamp(0.75rem, 2vw + 0.5rem, 1.5rem) !important;
         box-sizing: border-box;
     }
     .gradio-container .gradio-block {
         width: 100%;
-        max-width: 960px;
-        margin: 0 auto;
     }
-    .chat-message {
-        padding: 1rem;
-        border-radius: 0.75rem;
-        margin: 0.5rem 0;
+    .header-text,
+    .suggestions {
+        text-align: center;
     }
     .gradio-chatbot {
-        border-radius: 1rem !important;
+        border-radius: 0.75rem !important;
         border: 1px solid #e2e8f0 !important;
         background-color: #f8fafc !important;
-        max-height: 75vh;
+        min-height: clamp(340px, 55vh, 620px);
     }
     .gradio-button {
         border-radius: 0.5rem !important;
@@ -199,9 +198,6 @@ def create_ui():
         transform: translateY(-1px);
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
     }
-    .action-button {
-        min-width: 0 !important;
-    }
     .gradio-textbox textarea {
         border-radius: 0.5rem !important;
         border: 2px solid #cbd5e1 !important;
@@ -212,32 +208,30 @@ def create_ui():
     }
     #input-row {
         gap: 0.75rem;
-        align-items: stretch;
-        flex-wrap: nowrap;
+        align-items: flex-start;
+        flex-wrap: wrap;
     }
     #input-row .gradio-textbox {
-        flex: 1 1 auto;
+        flex: 1 1 240px;
+        min-width: 0;
     }
     #button-column {
         display: flex;
+        flex: 0 0 auto;
         gap: 0.5rem;
     }
     #button-column .gradio-button {
-        flex: 1 1 0;
-    }
-    .header-text,
-    .suggestions {
-        text-align: center;
-    }
-    @media (max-width: 1024px) {
-        .gradio-container {
-            padding: 1.25rem !important;
-        }
+        flex: 1 1 120px;
     }
     @media (max-width: 768px) {
         .gradio-container {
-            padding: 1rem !important;
+            padding: clamp(0.75rem, 4vw, 1.25rem) !important;
         }
+        .gradio-chatbot {
+            min-height: clamp(280px, 60vh, 520px);
+        }
+    }
+    @media (max-width: 640px) {
         #input-row {
             flex-direction: column;
         }
@@ -247,22 +241,11 @@ def create_ui():
         #button-column .gradio-button {
             width: 100%;
         }
-        .gradio-chatbot {
-            height: clamp(320px, 65vh, 540px) !important;
-        }
-    }
-    @media (max-width: 480px) {
-        .gradio-container {
-            padding: 0.75rem !important;
-        }
         .header-text h1 {
-            font-size: 1.75rem;
+            font-size: 1.5rem;
         }
         .header-text h3 {
-            font-size: 1.1rem;
-        }
-        .gradio-button {
-            width: 100%;
+            font-size: 1rem;
         }
     }
     """
@@ -288,7 +271,6 @@ def create_ui():
         # Chat interface with initial welcome message
         chatbot = gr.Chatbot(
             label="Chat",
-            height=600,
             show_copy_button=True,
             avatar_images=(None, "https://i.pravatar.cc/150?img=12"),  # User avatar, bot avatar
             show_label=False,
