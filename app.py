@@ -181,6 +181,35 @@ def create_ui():
         min-height: clamp(340px, 55vh, 620px);
         box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
     }
+    .gradio-chatbot .message,
+    .gradio-chatbot .message.user,
+    .gradio-chatbot .message.bot {
+        border-radius: 1rem;
+        padding: 0.75rem 1rem;
+        margin: 0.4rem 0;
+        font-size: 0.95rem;
+        line-height: 1.55;
+        word-break: break-word;
+        white-space: pre-wrap;
+        max-width: min(100%, 90ch);
+        box-shadow: none;
+    }
+    .gradio-chatbot .message.user {
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        color: #ffffff;
+        margin-left: auto;
+    }
+    .gradio-chatbot .message.bot {
+        background: #f1f5f9;
+        color: #0f172a;
+        margin-right: auto;
+    }
+    .gradio-chatbot .message-content p {
+        margin: 0;
+    }
+    .gradio-chatbot .message > .avatar {
+        display: none;
+    }
     .gradio-button {
         border-radius: 0.5rem !important;
         font-weight: 500 !important;
@@ -288,6 +317,7 @@ def create_ui():
             show_label=False,
             type="messages",  # Use new messages format instead of deprecated tuples
             value=[],
+            elem_classes=["chatbot-panel"],
         )
 
         with gr.Row(elem_id="input-row", equal_height=True):
