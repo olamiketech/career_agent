@@ -177,8 +177,9 @@ def create_ui():
     .gradio-chatbot {
         border-radius: 0.75rem !important;
         border: 1px solid #e2e8f0 !important;
-        background-color: #f8fafc !important;
+        background-color: #ffffff !important;
         min-height: clamp(340px, 55vh, 620px);
+        box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
     }
     .gradio-button {
         border-radius: 0.5rem !important;
@@ -206,6 +207,10 @@ def create_ui():
         border-color: #3b82f6 !important;
         box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
     }
+    .message-input textarea {
+        min-height: clamp(120px, 22vh, 200px) !important;
+        resize: vertical;
+    }
     #input-row {
         gap: 0.75rem;
         align-items: flex-start;
@@ -219,9 +224,16 @@ def create_ui():
         display: flex;
         flex: 0 0 auto;
         gap: 0.5rem;
+        flex-wrap: wrap;
     }
     #button-column .gradio-button {
         flex: 1 1 120px;
+        min-width: 110px;
+    }
+    .action-button button {
+        width: 100%;
+        padding: 0.65rem 1rem !important;
+        font-size: 0.95rem !important;
     }
     @media (max-width: 768px) {
         .gradio-container {
@@ -241,6 +253,9 @@ def create_ui():
         #button-column .gradio-button {
             width: 100%;
         }
+        .message-input textarea {
+            min-height: clamp(140px, 28vh, 220px) !important;
+        }
         .header-text h1 {
             font-size: 1.5rem;
         }
@@ -257,11 +272,8 @@ def create_ui():
             with gr.Column(scale=1):
                 gr.Markdown(
                     f"""
-                    # 👋 Hi, I'm {me.name}
-                    ### Your AI-Powered Assistant
-                    
-                    I'm here to answer questions about my background, experience, and work. 
-                    Feel free to ask me anything!
+                    ## Chat with {me.name}
+                    Ask about work, experience, or ways to collaborate.
                     """,
                     elem_classes=["header-text"]
                 )
@@ -275,17 +287,20 @@ def create_ui():
             avatar_images=(None, "https://i.pravatar.cc/150?img=12"),  # User avatar, bot avatar
             show_label=False,
             type="messages",  # Use new messages format instead of deprecated tuples
-            value=[{"role": "assistant", "content": f"Hello! I'm {me.name}'s AI assistant. 👋\n\nI'm here to help you learn about {me.name}'s background, experience, and work. Feel free to ask me anything - I'd love to chat!"}],
+            value=[],
         )
-        
+
         with gr.Row(elem_id="input-row", equal_height=True):
             msg = gr.Textbox(
                 label="",
-                placeholder="Type your message here... (e.g., 'Tell me about your experience' or 'What projects have you worked on?')",
+                placeholder="Type a question or say hello to start the conversation.",
                 show_label=False,
                 scale=9,
                 container=False,
                 autofocus=True,
+                lines=4,
+                max_lines=8,
+                elem_classes=["message-input"],
             )
             with gr.Column(scale=3, min_width=220, elem_id="button-column"):
                 submit_btn = gr.Button(
@@ -306,11 +321,7 @@ def create_ui():
         # Footer with helpful suggestions
         gr.Markdown(
             """
-            ### 💡 Try asking:
-            - What's your background in AI?
-            - Tell me about your projects
-            - What skills do you have?
-            - How can I get in touch?
+            **Try asking about:** recent projects · key skills · collaboration ideas · how to connect
             """,
             elem_classes=["suggestions"]
         )
@@ -337,8 +348,7 @@ def create_ui():
         
         def clear_chat():
             """Clear the chat history and restore welcome message"""
-            welcome_message = [{"role": "assistant", "content": f"Hello! I'm {me.name}'s AI assistant. 👋\n\nI'm here to help you learn about {me.name}'s background, experience, and work. Feel free to ask me anything - I'd love to chat!"}]
-            return welcome_message, ""
+            return [], ""
         
         # Connect events
         msg.submit(respond, [msg, chatbot], [msg, chatbot])
